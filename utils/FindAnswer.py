@@ -24,6 +24,7 @@ class FindAnswer:
         for k in keywords:
             query_pre += str(k)
 
+        print("단어 분석 : ",keywords)
         query_encode = self.model.encode(query_pre)
         query_tensor = torch.tensor(query_encode)
 
@@ -39,8 +40,19 @@ class FindAnswer:
         cos_sim = util.cos_sim(query_tensor, tensor_query_data)
         best_sim_idx = int(np.argmax(cos_sim))
         selected_qes = [item['query'] for item in db_data][best_sim_idx]
+        print("질문 의도 : ", intent)
+        print("Load Data Array Size : ",len(db_data)," 가장 높은 유사도를 가진 Index : ", best_sim_idx)
 
-        facility, facility_class, facility_product = self.db.facility_info(keywords)
+
+        result = self.db.facility_info(keywords)
+        if result is not None:
+            facility, facility_class, facility_product = result
+        else:
+            facility, facility_class, facility_product = None, None, None
+        print("facility: ", facility)
+        print("facility_class: ", facility_class)
+        print("facility_product: ", facility_product)
+
 
         if [item['intent'] for item in db_data][best_sim_idx] == intent:
             selected_qes_encode = self.model.encode(selected_qes)
@@ -52,7 +64,7 @@ class FindAnswer:
                               .format(facilities_phone=facility["contact"]))
                 elif intent == '가격':
                     answer = ([item['answer'] for item in db_data][best_sim_idx]
-                              .format(default_time=facility["default_time"], price=facility["basic_fee"]))
+                              .format(default_time=facility["default_time"], basic_fee=facility["basic_fee"]))
                 elif intent == '영업시간':
                     answer = ([item['answer'] for item in db_data][best_sim_idx]
                               .format(open_time=facility["open_time"], close_time=facility["close_time"]))

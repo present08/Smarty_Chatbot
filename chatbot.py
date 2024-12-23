@@ -72,16 +72,21 @@ def to_client(conn, addr, params):
 
         f = FindAnswer(db=db, preprocess=p)
         selected_qes, score, answer, keywords, query_tensor, set_answer = f.search(query, intent_name)
+        print("키워드 : ", keywords)
+        print("질문 : ",query)
+        print("질문 의도 : ", intent_name)
+        print("가장 가까운 유사도 점수 : ",score)
+        print("답변 : ",answer)
+
 
         if score < 0.7:
             answer = "부정확한 질문이거나 답변할 수 없습니다.\n 수일 내로 답변을 업데이트하겠습니다.\n 죄송합니다 :("
             # imageUrl = "없음"
             # 사용자 질문, 예측 의도, 선택된 질문, 선택된 질문 의도, 유사도 점수
+            Logger.addHandler(LogHandler)
             Logger.error(f"{query},{intent_name},{selected_qes},{score}")
         else :
             if score > 0.83:
-                pass
-            else :
                 db.insert_data(intent_name, query, set_answer, query_tensor)
 
         send_json_data_str = {

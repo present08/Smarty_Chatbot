@@ -111,18 +111,21 @@ class Database :
     def facility_info(self,keywords):
         sql = 'select * from facility'
         facility_list = self.select_all(sql)
+        print("시설리스트",facility_list)
         try:
             for item in keywords:
-                for facility in facility_list:
-                    if item in facility.values():
-                        facility_class = self.select_all("select * from class where facility_id = '{}'".format(facility["facility_id"]))
-                        facility_product = self.select_all("select * from product where facility_id = '{}'".format(facility["facility_id"]))
-                        return facility, facility_class, facility_product
-                    else :
-                        facility = None
-                        facility_class = None
-                        facility_product = None
-                        return facility, facility_class, facility_product
+                if facility_list is not None:
+                    for facility in facility_list:
+                        if item in facility.values():
+                            print("item : ",item)
+                            facility_class = self.select_all("select * from class where facility_id = '{}'".format(facility["facility_id"]))
+                            facility_product = self.select_all("select * from product where facility_id = '{}'".format(facility["facility_id"]))
+                            return facility, facility_class, facility_product
+                else:
+                    facility = None
+                    facility_class = None
+                    facility_product = None
+                    return facility, facility_class, facility_product
         except :
             facility = None
             facility_class = None

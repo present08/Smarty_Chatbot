@@ -22,7 +22,6 @@ for sentence in text:
     seq = p.get_wordidx_sequence(keywords)
     sequences.append(seq)
 
-
 from config.GlobalParams import MAX_SEQ_LEN
 padded_seqs = preprocessing.sequence.pad_sequences(sequences, maxlen=MAX_SEQ_LEN, padding='post')
 

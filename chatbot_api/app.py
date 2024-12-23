@@ -36,18 +36,18 @@ def get_answer_from_engine(bottype, query):
     return ret_data
 
 db = Database(host=DB_HOST, user=DB_USER, password=DB_PASSWORD, db_name=DB_NAME, charset='utf8mb4')
-
+conn = db.connect()
 def save_data(messages, time, user_id):
-    conn = db.connect()
+    print("DB에 들어갈 메세지 : ",messages)
     cursor = conn.cursor()
     sql = 'insert into chatbot(user_id, chat_num, message, chat_type, chat_time) values(%s, %s, %s, %s, %s)'
     for key,value in messages.items():
         cursor.execute(sql,(user_id, key, value[0],value[1], time))
     conn.commit()
-    conn.close()
 
 @socketio.on('send_message')
 def handle_message(data):
+    print(data)
     return_data = None
     try:
         if data['BotType'] == "QUICK":
@@ -58,7 +58,8 @@ def handle_message(data):
             return_data = json.dumps(get_answer_from_engine(data['BotType'] ,data['Query']),ensure_ascii=False)
             emit('receive_normal', {'response': f"{return_data}"})
     except Exception as ex :
-        pass
+        print("Error : " ,ex)
+
 @app.route('/save', methods=['POST'])
 def save() :
     data = request.get_json()
