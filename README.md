@@ -19,6 +19,10 @@ AI 서비스를 기획 및 개발한 Sub 프로젝트입니다.
 - Chatbot API와 웹 사이트 통신
 - 최종 Chatting Data DB 저장
 
+## Sequence diagram
+![mermaid-diagram-2025-01-02-111937](https://github.com/user-attachments/assets/b0d182e2-2301-4aa8-8fac-14b9a2348426)
+
+
 ## Result
 다음과 같이 챗봇 소켓, API 서버를 구현하고  
 웹 서비스와 연결하였습니다.
